@@ -1,0 +1,15 @@
+.side-menu {
+	height: 100%;
+
+	&__list-item {
+		padding:       16px;
+		border-radius: 12px;
+		transition:    0.3s;
+		font-size:     12px;
+
+		&:hover {
+			background-color: color-mix(in oklab, #1d874996 50%, transparent);
+			transition:       0.3s;
+		}
+	}
+}
