@@ -1,11 +1,11 @@
 import './SideMenu.scss';
-import flowerImg from '../assets/flower.png';
+import flowerImg from '../../assets/flower.png';
 import {Link} from 'react-router-dom';
 
 function SideMenu() {
 	return (
 		<>
-			<div className="side-menu rounded-lg bg-white/50 w-44">
+			<div className="side-menu rounded-xl bg-white/50 w-50">
 				<div className="side-menu__title flex items-center justify-center p-6 text-xl gap-2">
 					<img src={flowerImg} alt="flower" className="w-10 h-10" />
 					<div> Мой сад</div>
