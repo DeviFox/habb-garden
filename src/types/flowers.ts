@@ -1,0 +1,12 @@
+export enum Flowers {
+	ROSE      = 'ROSE',
+	SUNFLOWER = 'SUNFLOWER',
+	TULIP     = 'TULIP',
+	DAFFODIL  = 'DAFFODIL',
+	DAISY     = 'DAISY',
+	HYDRANGEA = 'HYDRANGEA',
+	LAVENDER  = 'LAVENDER',
+	LILLY     = 'LILLY',
+	ORCHID    = 'ORCHID',
+	PEONY     = 'PEONY',
+}

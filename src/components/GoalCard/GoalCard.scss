@@ -1,0 +1,33 @@
+.goal-card {
+	width:      200px;
+	height:     280px;
+	transition: transform 0.25s ease, box-shadow 0.25s ease;
+	cursor:     pointer;
+
+	&:hover {
+		transform:  translateY(-3px);
+		box-shadow: 0 8px 24px rgb(0 0 0 / 10%);
+	}
+
+	&__img {
+		width:  190px;
+		height: 200px;
+	}
+}
+
+.goal-card_plus {
+	width:      190px;
+	height:     280px;
+	transition: transform 0.25s ease, box-shadow 0.25s ease;
+	cursor:     pointer;
+
+	&:hover {
+		transform:  translateY(-5px);
+		box-shadow: 0 8px 24px rgb(0 0 0 / 10%);
+	}
+
+	&__img {
+		width:  120px;
+		height: 120px;
+	}
+}

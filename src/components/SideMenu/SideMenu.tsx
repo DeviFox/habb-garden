@@ -14,7 +14,7 @@ function SideMenu() {
 					<Link className="side-menu__list-item cursor-pointer" to="/"> Сад </Link>
 					<Link className="side-menu__list-item cursor-pointer" to="/goals"> Цели </Link>
 					<Link className="side-menu__list-item cursor-pointer" to="/cementary"> Кладбище </Link>
-					<Link className="side-menu__list-item cursor-pointer" to="/statls"> Статистика </Link>
+					<Link className="side-menu__list-item cursor-pointer" to="/stats"> Статистика </Link>
 				</div>
 			</div>
 		</>

@@ -1,6 +1,6 @@
 import './App.css';
+import ConstructionLayout from './screens/ConstructionLayout.tsx';
 import GardenLayout from './screens/GardenLayout.tsx';
-import GoalsLayout from './screens/GoalsLayout.tsx';
 import SideMenu from './components/SideMenu/SideMenu.tsx';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 
@@ -12,9 +12,9 @@ function App() {
 				<SideMenu/>
 				<Routes>
 					<Route path="/" element={<GardenLayout/>}/>
-					<Route path="/goals" element={<GoalsLayout/>}/>
-					<Route path="/cementary" element={<div></div>}/>
-					<Route path="/stats" element={<div></div>}/>
+					<Route path="/goals" element={<ConstructionLayout/>}/>
+					<Route path="/cementary" element={<ConstructionLayout/>}/>
+					<Route path="/stats" element={<ConstructionLayout/>}/>
 				</Routes>
 			</div>
 		</BrowserRouter>

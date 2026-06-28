@@ -1,0 +1,52 @@
+.flowers-picker {
+	gap: 12px;
+
+	&__flower {
+		width:         90px;
+		height:        110px;
+		border-radius: 14px;
+		display:       flex;
+		align-items:   flex-end;
+		padding:       8px;
+		cursor:        pointer;
+		position:      relative;
+		background:    rgba(224, 219, 200, 0.68);
+		border:        2px solid transparent;
+		transition:    border-color 0.15s ease, box-shadow 0.15s ease;
+
+		img {
+			object-fit: contain;
+			width:      100%;
+		}
+
+		&--selected {
+			border-color: #3c6f3b;
+
+			&::after {
+				content:       '';
+				position:      absolute;
+				top:           7px;
+				right:         7px;
+				width:         16px;
+				height:        16px;
+				border-radius: 50%;
+				background:    #3c6f3b;
+				box-shadow:    0 1px 3px rgba(0, 0, 0, 0.15);
+			}
+
+			&::before {
+				content:     '';
+				position:    absolute;
+				top:         11px;
+				right:       12px;
+				width:       5px;
+				height:      8px;
+				border:      2px solid #fff;
+				border-top:  none;
+				border-left: none;
+				transform:   rotate(40deg);
+				z-index:     1;
+			}
+		}
+	}
+}

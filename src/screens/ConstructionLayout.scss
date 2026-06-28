@@ -1,0 +1,18 @@
+.construction-layout {
+	display:         flex;
+	align-items:     center;
+	justify-content: center;
+
+	&__img {
+		border-radius:  16px;
+		outline:        2px dashed rgb(63 111 59 / 35%);
+		outline-offset: 4px;
+		box-shadow:     0 8px 24px rgb(0 0 0 / 10%);
+		transition:     outline-color 0.3s ease, box-shadow 0.3s ease;
+
+		&:hover {
+			outline-color: rgb(63 111 59 / 60%);
+			box-shadow:    0 12px 32px rgb(0 0 0 / 15%);
+		}
+	}
+}
