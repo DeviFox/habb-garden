@@ -5,6 +5,8 @@ export interface Goal {
 	id: string,
 	/** Goal title */
 	name: string,
+	/** Goal description */
+	description: string,
 	/** Date, when flower(goal) has been created */
 	createdAt: string,
 	/** Completed days streak */

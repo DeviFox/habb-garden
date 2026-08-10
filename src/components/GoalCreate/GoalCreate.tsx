@@ -1,5 +1,7 @@
 import "./GoalCreate.scss";
 import {useState} from 'react';
+import {useGoalStore} from '../../store/goal-store.ts';
+import type {Flowers} from '../../types/flowers.ts';
 import getWordDays from '../../utils/dateForms.ts';
 import Leaf from '../../assets/leaf.png';
 import FlowersPicker from '../FlowerPicker/FlowersPicker.tsx';
@@ -9,8 +11,28 @@ function GoalCreate({onButtonClick}: { onButtonClick: () => void }) {
 		() => new Date().toISOString().slice(0, 10)
 	)
 
-	const daysLeft = Math.ceil((new Date(selectedDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+	const [goalName, setGoalName]               = useState<string>('');
+	const [goalDescription, setGoalDescription] = useState<string>('');
+	const [goalFlower, setGoalFlower]           = useState<Flowers | null>(null);
 
+	const {addGoal} = useGoalStore();
+
+	const daysLeft = Math.ceil((new Date(selectedDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+
+	function createGoal() {
+		addGoal({
+			id:            crypto.randomUUID(),
+			createdAt:     new Date().toISOString().slice(0, 10),
+			name:          goalName,
+			description:   goalDescription,
+			flowerType:    goalFlower,
+			goalTerm:      daysLeft,
+			frozenDays:    [],
+			completedDays: [],
+			status:        'alive'
+		})
+		onButtonClick();
+	}
 
 	return (
 		<>
@@ -20,15 +42,27 @@ function GoalCreate({onButtonClick}: { onButtonClick: () => void }) {
 				<div className="goal-create__subheader text-gray-600 mb-6">Создайте новую цель, чтобы вырастить её в своём саду</div>
 				<div className="goal-create__form-name text-sm font-bold">
 					1. Название цели
-					<input className="goal-create__form-name_input mt-1" name="goal-name" maxLength={60}/>
+					<input
+						className="goal-create__form-name_input mt-1"
+						name="goal-name"
+						maxLength={60}
+						value={goalName}
+						onChange={(e) => setGoalName(e.target.value)}
+					/>
 				</div>
 				<div className="goal-create__form-comment text-sm font-bold mt-6">
 					2. Описание (необязательно)
-					<input className="goal-create__form-name_input mt-1" name="goal-name" maxLength={60}/>
+					<input
+						className="goal-create__form-name_input mt-1"
+						name="goal-name"
+						maxLength={60}
+						value={goalDescription}
+						onChange={(e) => setGoalDescription(e.target.value)}
+					/>
 				</div>
 				<div className="goal-create__form-flower text-sm font-bold mt-6">
 					3. Выберите цветок
-					<FlowersPicker/>
+					<FlowersPicker onSelect={setGoalFlower}/>
 				</div>
 				<div className="goal-create__form-term text-sm font-bold mt-6">
 					4. Срок выполнения
@@ -52,8 +86,8 @@ function GoalCreate({onButtonClick}: { onButtonClick: () => void }) {
 					</div>
 				</div>
 				<div className="goal-create__footer flex">
-					<button className="goal-create__footer-btn" onClick={onButtonClick}> Отменить </button>
-					<button className="goal-create__footer-btn" onClick={onButtonClick}> Создать </button>
+					<button className="goal-create__footer-btn" onClick={onButtonClick}> Отменить</button>
+					<button className="goal-create__footer-btn" onClick={createGoal}> Создать</button>
 				</div>
 			</div>
 		</>

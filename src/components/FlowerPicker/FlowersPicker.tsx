@@ -1,40 +1,51 @@
 import {useState} from 'react';
+import Lavender from '../../assets/flowers/lavender/stage-1.png';
 import Rose from '../../assets/flowers/rose/stage-1.png';
 import Sunflower from '../../assets/flowers/sunflower/stage-1.png';
-import Lavender from '../../assets/flowers/lavender/stage-1.png';
 import Tulips from '../../assets/flowers/tulips/stage-1.png';
 
 import "./FlowersPicker.scss";
+import {Flowers} from '../../types/flowers.ts';
 
-function FlowersPicker() {
+type FlowersPickerProps = {
+	onSelect: (id: string) => void,
+}
+
+function FlowersPicker({onSelect}: FlowersPickerProps) {
 	const flowers = [
 		{
-			id:  '0',
+			id:  Flowers.TULIP,
 			pic: Tulips,
 		},
 		{
-			id:  '1',
+			id:  Flowers.ROSE,
 			pic: Rose
 		},
 		{
-			id:  '2',
+			id:  Flowers.SUNFLOWER,
 			pic: Sunflower,
 		},
 		{
-			id:  '3',
+			id:  Flowers.LAVENDER,
 			pic: Lavender,
 		},
 	]
 
-	const [selectedFlower, setFlower] = useState('0');
+	const [selectedFlower, setFlower] = useState(Flowers.TULIP);
+
+	function onSelectFlower(id: Flowers) {
+		setFlower(id);
+		onSelect(id);
+	}
 
 	return (
 		<>
 			<div className="flowers-picker flex mt-1">
 				{flowers.map(flower => (
-					<div className={`flowers-picker__flower ${selectedFlower === flower.id ? "flowers-picker__flower--selected" : ""}`}
-					     key={flower.id}
-					     onClick={() => setFlower(flower.id)}
+					<div
+						className={`flowers-picker__flower ${selectedFlower === flower.id ? "flowers-picker__flower--selected" : ""}`}
+						key={flower.id}
+						onClick={() => onSelectFlower(flower.id)}
 					>
 						<img src={flower.pic} alt='flower'/>
 					</div>

@@ -18,10 +18,14 @@ const folderMap: Record<Flowers, string> = {
 export class PlantsMatcher {
 	matchPlant(flower: Flowers, stage: number): string | undefined {
 		const folder = folderMap[flower]
-		if (!folder) return null
+		if (!folder) {
+			return undefined;
+		}
 
 		const module = images[`../assets/flowers/${folder}/stage-${stage}.png`] as { default: string } | undefined
-		if (!module) return null
+		if (!module) {
+			return undefined;
+		}
 
 		return module.default
 	}

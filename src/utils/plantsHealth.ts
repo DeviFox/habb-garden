@@ -1,7 +1,9 @@
 import type {Goal} from '../types/goal.ts';
 
 export function calcMaxHealth(plant: Goal) {
-	return Math.max(Math.round(plant.goalTerm * 20 / 100), 3)
+	const maxHp = Math.max(Math.round(plant.goalTerm * 20 / 100), 3);
+
+	return Math.min(10, maxHp);
 }
 
 export function calcStage(plant: Goal) {
