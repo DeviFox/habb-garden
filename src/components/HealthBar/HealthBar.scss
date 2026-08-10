@@ -1,0 +1,17 @@
+.health-bar {
+	&__sections {
+		display: flex;
+		gap:     3px;
+	}
+
+	&__section {
+		width:         12px;
+		height:        6px;
+		border-radius: 3px;
+		background:    rgb(63 150 0 / 30%);
+
+		&--active {
+			background: rgb(63 150 0 / 80%);
+		}
+	}
+}
