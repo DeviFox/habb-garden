@@ -15,11 +15,21 @@ function GoalCreate({onButtonClick}: { onButtonClick: () => void }) {
 	const [goalDescription, setGoalDescription] = useState<string>('');
 	const [goalFlower, setGoalFlower]           = useState<Flowers | null>(null);
 
+	const [createBtnText, setCreateBtnText]     = useState<string>('Создать');
+
+
 	const {addGoal} = useGoalStore();
 
 	const daysLeft = Math.ceil((new Date(selectedDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
 
 	function createGoal() {
+		if (!goalName || !goalDescription || !goalFlower) {
+			setCreateBtnText('Заполните все поля!');
+
+			setTimeout(()=> setCreateBtnText('Создать'), 2000);
+
+			return;
+		}
 		addGoal({
 			id:            crypto.randomUUID(),
 			createdAt:     new Date().toISOString().slice(0, 10),
@@ -36,8 +46,8 @@ function GoalCreate({onButtonClick}: { onButtonClick: () => void }) {
 
 	return (
 		<>
-			<div className="goal-create__backdrop"/>
-			<div className="goal-create">
+			<div className="goal-create__backdrop" onClick={onButtonClick}/>
+			<div className="goal-create" style={{viewTransitionName: 'goal-create'}}>
 				<div className="goal-create__header text-3xl font-bold mb-1">Новая цель</div>
 				<div className="goal-create__subheader text-gray-600 mb-6">Создайте новую цель, чтобы вырастить её в своём саду</div>
 				<div className="goal-create__form-name text-sm font-bold">
@@ -87,7 +97,7 @@ function GoalCreate({onButtonClick}: { onButtonClick: () => void }) {
 				</div>
 				<div className="goal-create__footer flex">
 					<button className="goal-create__footer-btn" onClick={onButtonClick}> Отменить</button>
-					<button className="goal-create__footer-btn" onClick={createGoal}> Создать</button>
+					<button className="goal-create__footer-btn" onClick={createGoal}> {createBtnText}</button>
 				</div>
 			</div>
 		</>

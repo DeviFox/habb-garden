@@ -8,7 +8,7 @@ import "./FlowersPicker.scss";
 import {Flowers} from '../../types/flowers.ts';
 
 type FlowersPickerProps = {
-	onSelect: (id: string) => void,
+	onSelect: (id: Flowers) => void,
 }
 
 function FlowersPicker({onSelect}: FlowersPickerProps) {

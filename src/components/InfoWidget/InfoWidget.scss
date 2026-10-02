@@ -1,8 +1,434 @@
+/* Animated mask fade — registering the custom props so they tween smoothly
+   when scroll state flips, instead of stepping. */
+@property --fade-left  { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --fade-right { syntax: '<length>'; inherits: false; initial-value: 0px; }
+
 .info-widget {
-	background-image: linear-gradient(to top, #ffffff4f 0%, transparent 50%), url(/src/assets/garden-main-scene.png);
-	background-size:  cover;
+	position:            relative;
+	height:              clamp(420px, 58vh, 580px);
+	display:             flex;
+	flex-direction:      column;
+	justify-content:     space-between;
+	padding:             32px 36px 28px;
+	box-sizing:          border-box;
+	overflow:            hidden;
+	background-image:    url(/src/assets/garden-main-scene.png);
+	background-size:     cover;
+	background-position: center;
+
+	/* Night-view tint: cool blue wash over the scene, nothing else changes */
+	&--night {
+		background-color: #1e2a3a;
+		background-blend-mode: multiply;
+	}
+
+	html[data-theme="night"] & {
+		.info-widget__chips {
+			background: rgba(30, 42, 58, 0.55);
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+		}
+		.info-widget__chip + .info-widget__chip { border-left-color: rgba(140, 180, 220, 0.18); }
+		.info-widget__chip-value  { color: #e6e2d6; }
+		.info-widget__chip-label  { color: #8591a1; }
+
+		.info-widget__view-toggle { background: rgba(30, 42, 58, 0.55); }
+		.info-widget__view-opt    { color: #8591a1; }
+		.info-widget__view-opt:hover { color: #a8e6a8; }
+		.info-widget__view-opt--active {
+			background: rgba(140, 180, 220, 0.16);
+			color:      #a8e6a8;
+		}
+
+		.info-widget__shelf-divider-tag {
+			background: rgba(227, 184, 77, 0.14);
+			color:      #e3b84d;
+		}
+	}
+
+	/* Localised warm slot under the salutation — not a page-wide veil. */
+	&::before {
+		content:        '';
+		position:       absolute;
+		inset:          0 auto auto 0;
+		width:          62%;
+		height:         55%;
+		background:
+			radial-gradient(
+				ellipse at 18% 22%,
+				rgba(255, 245, 220, 0.72) 0%,   /* Morning Warm, softened */
+				rgba(255, 220, 210, 0.22) 50%,  /* Morning Blush, softened */
+				transparent 78%
+			);
+		pointer-events: none;
+	}
+
+	/* ---------- top bar: salutation + chips + actions ---------- */
+
+	&__topbar {
+		position:         relative;
+		z-index:          1;
+		display:          grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, auto) minmax(0, auto);
+		gap:              20px;
+		align-items:      start;
+	}
+
+	&__salutation {
+		display:        flex;
+		flex-direction: column;
+		color:          #fffbeb;                           /* Amber Halo */
+		text-shadow:    0 1px 10px rgba(60, 111, 59, 0.28);
+		min-width:      0;
+	}
+
+	&__salutation-greeting {
+		font-size:      30px;
+		font-weight:    700;
+		letter-spacing: -0.01em;
+		line-height:    1.08;
+	}
+
+	&__salutation-name {
+		font-size:      30px;
+		font-weight:    500;
+		font-style:     italic;
+		letter-spacing: -0.01em;
+		line-height:    1.08;
+		margin-top:     2px;
+	}
+
+	&__salutation-tag {
+		margin-top:     10px;
+		font-size:      13px;
+		color:          rgba(255, 251, 235, 0.86);
+		letter-spacing: 0.01em;
+	}
+
+	/* ---------- chip row ---------- */
+
+	&__chips {
+		display:         flex;
+		gap:             4px;
+		padding:         8px 10px;
+		background:      rgba(255, 255, 255, 0.5);        /* Greenhouse Glass */
+		border-radius:   14px;
+		box-shadow:      0 2px 10px rgba(60, 111, 59, 0.08);
+		min-width:       0;
+		max-width:       100%;
+		box-sizing:      border-box;
+	}
+
+	&__chip {
+		display:     flex;
+		align-items: center;
+		gap:         8px;
+		padding:     4px 8px;
+		min-width:   0;
+	}
+
+	&__chip + &__chip {
+		border-left: 1px solid rgba(60, 111, 59, 0.14);
+	}
+
+	&__chip-icon {
+		display:         flex;
+		align-items:     center;
+		justify-content: center;
+		width:           22px;
+		height:          22px;
+		flex-shrink:     0;
+
+		svg { width: 100%; height: 100%; }
+
+		&--flame   { color: #c7823a; }
+		&--snow    { color: #4b8aa6; }
+		&--crystal { color: #3c6f3b; }
+	}
+
+	&__chip-text {
+		display:        flex;
+		flex-direction: column;
+		line-height:    1.1;
+		min-width:      0;
+		white-space:    nowrap;
+	}
+
+	&__chip-value {
+		font-size:            18px;
+		font-weight:          600;
+		color:                #1f2a1c;
+		font-variant-numeric: tabular-nums;
+	}
+
+	&__chip-label {
+		font-size:       10px;
+		letter-spacing:  0.03em;
+		text-transform:  uppercase;
+		color:           #88877a;
+		white-space:     nowrap;
+	}
+
+	/* ---------- actions ---------- */
+
+	&__actions {
+		display:     flex;
+		align-items: center;
+		gap:         10px;
+	}
+
+	&__new-goal {
+		display:         flex;
+		align-items:     center;
+		gap:             8px;
+		padding:         12px 20px;
+		height:          46px;
+		border:          none;
+		border-radius:   12px;
+		background:      #3c6f3b;                          /* Moss Deep solid — primary action */
+		color:           #fffbeb;
+		font-size:       14px;
+		font-weight:     500;
+		cursor:          pointer;
+		transition:      background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+
+		svg {
+			width:       18px;
+			height:      18px;
+			color:       #fffbeb;
+			flex-shrink: 0;
+		}
+
+		&:hover:not(:disabled) {
+			background: #2f5a2e;
+			transform:  translateY(-1px);
+			box-shadow: 0 6px 16px rgba(60, 111, 59, 0.32);
+		}
+
+		&:focus-visible {
+			outline:        2px solid #fffbeb;
+			outline-offset: 2px;
+		}
+
+		&:disabled {
+			cursor:  default;
+			opacity: 0.75;
+		}
+	}
+
+	&__view-toggle {
+		display:        flex;
+		background:     rgba(255, 255, 255, 0.5);
+		border-radius:  12px;
+		padding:        3px;
+		height:         46px;
+		box-shadow:     0 2px 10px rgba(60, 111, 59, 0.08);
+	}
+
+	&__view-opt {
+		display:         flex;
+		align-items:     center;
+		justify-content: center;
+		width:           40px;
+		height:          100%;
+		border:          none;
+		background:      transparent;
+		border-radius:   10px;
+		color:           #88877a;
+		cursor:          pointer;
+		transition:      background 0.2s ease, color 0.2s ease;
+
+		svg { width: 18px; height: 18px; }
+
+		&:hover { color: #3c6f3b; }
+
+		&--active {
+			background: rgba(60, 111, 59, 0.12);
+			color:      #3c6f3b;
+		}
+
+		&:focus-visible {
+			outline:        2px solid #3c6f3b;
+			outline-offset: 2px;
+		}
+	}
+
+	/* ---------- cards row ---------- */
 
 	&__cards {
-		margin-top: 60px;
+		position: relative;
+		z-index:  1;
+	}
+
+	&__shelf-divider {
+		flex-shrink:     0;
+		align-self:      stretch;
+		display:         flex;
+		align-items:     center;
+		justify-content: center;
+		padding:         0 8px;
+		position:        relative;
+
+		&::before,
+		&::after {
+			content:        '';
+			position:       absolute;
+			left:           50%;
+			width:          1px;
+			height:         40px;
+			background:
+				linear-gradient(
+					to bottom,
+					transparent 0%,
+					rgba(227, 184, 77, 0.4) 50%,
+					transparent 100%
+				);
+			transform:      translateX(-50%);
+		}
+
+		&::before { top: 10px; }
+		&::after  { bottom: 10px; }
+	}
+
+	&__shelf-divider-tag {
+		position:        relative;
+		z-index:         1;
+		writing-mode:    vertical-rl;
+		transform:       rotate(180deg);
+		font-size:       10px;
+		letter-spacing:  0.18em;
+		text-transform:  uppercase;
+		color:           #c7823a;
+		opacity:         0.9;
+		padding:         6px 2px;
+		background:      rgba(255, 245, 220, 0.75);
+		border-radius:   8px;
+	}
+
+	&__cards-created {
+		scroll-behavior: smooth;
+		padding-top:     14px;
+		padding-bottom:  10px;
+
+		/* 2D fade: horizontal fade only kicks in when content is actually
+		   overflowing in that direction (data-overflow-left/right set by JS on
+		   scroll). Vertical fade is always on so the card tops/bottoms don't
+		   get a hard edge against the garden scene. The two gradient layers are
+		   intersected so BOTH axes have to be opaque for a pixel to show. */
+		--fade-left:   0px;
+		--fade-right:  0px;
+		--fade-top:    8px;
+		--fade-bottom: 8px;
+
+		&[data-overflow-left="true"]  { --fade-left:  22px; }
+		&[data-overflow-right="true"] { --fade-right: 56px; }
+
+		-webkit-mask-image:
+			linear-gradient(
+				to right,
+				transparent 0,
+				#000 var(--fade-left),
+				#000 calc(100% - var(--fade-right)),
+				transparent 100%
+			),
+			linear-gradient(
+				to bottom,
+				transparent 0,
+				#000 var(--fade-top),
+				#000 calc(100% - var(--fade-bottom)),
+				transparent 100%
+			);
+		mask-image:
+			linear-gradient(
+				to right,
+				transparent 0,
+				#000 var(--fade-left),
+				#000 calc(100% - var(--fade-right)),
+				transparent 100%
+			),
+			linear-gradient(
+				to bottom,
+				transparent 0,
+				#000 var(--fade-top),
+				#000 calc(100% - var(--fade-bottom)),
+				transparent 100%
+			);
+		-webkit-mask-composite: source-in;
+		mask-composite:         intersect;
+		transition:             --fade-left 0.2s ease, --fade-right 0.2s ease;
+
+		&::-webkit-scrollbar       { height: 6px; }
+		&::-webkit-scrollbar-track { background: transparent; }
+		&::-webkit-scrollbar-thumb { background: rgba(60, 111, 59, 0.35); border-radius: 3px; }
+
+		scrollbar-color: rgba(60, 111, 59, 0.35) transparent;
+		scrollbar-width: thin;
+	}
+
+
+	/* ---------- Mobile: topbar stacks ---------- */
+
+	@media (max-width: 900px) {
+		padding:         24px 20px 20px;
+		height:          auto;
+
+		&__topbar {
+			grid-template-columns: 1fr;
+			gap:                   16px;
+		}
+
+		&__chips {
+			justify-self: start;
+			overflow-x:   auto;
+			max-width:    100%;
+		}
+
+		&__actions {
+			justify-self: stretch;
+			justify-content: space-between;
+		}
+
+		&__new-goal { flex: 1; justify-content: center; }
+	}
+
+	@media (max-width: 640px) {
+		padding:         18px 16px 16px;
+		min-height:      440px;
+		border-radius:   16px;
+
+		&__salutation-greeting,
+		&__salutation-name { font-size: 20px; line-height: 1.1; }
+
+		&__salutation-tag {
+			font-size:   12px;
+			margin-top:  4px;
+			max-width:   32ch;
+		}
+
+		&__chips {
+			overflow-x: auto;
+			scroll-snap-type: x proximity;
+			-webkit-overflow-scrolling: touch;
+			scrollbar-width: none;
+
+			&::-webkit-scrollbar { display: none; }
+		}
+
+		&__chip { scroll-snap-align: start; }
+
+		&__chip-value { font-size: 16px; }
+		&__chip-label { font-size: 9px; }
+
+		&__new-goal {
+			height:    44px;
+			font-size: 13px;
+			padding:   10px 16px;
+
+			svg { width: 16px; height: 16px; }
+		}
+
+		&__view-toggle { height: 44px; }
+		&__view-opt    { width: 36px; }
+
+		&__cards-created { gap: 12px; }
 	}
 }

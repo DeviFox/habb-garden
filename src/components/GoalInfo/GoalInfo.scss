@@ -1,0 +1,866 @@
+/* GoalInfo — gardener's journal spread, tuned to the mock.
+   World: inherited from DESIGN.md (Sunlit Greenhouse). */
+
+.goal-info {
+	position:         fixed;
+	left:             50%;
+	transform:        translateX(-50%);
+	bottom:           0;
+	width:            100%;
+	max-width:        760px;
+	height:           auto;
+	min-height:       420px;
+	max-height:       85vh;
+	background:       #fdf5ed;             /* Modal Cream */
+	border-radius:    16px 16px 0 0;
+	box-shadow:       0 -2px 24px rgba(0, 0, 0, 0.08);
+	z-index:          100;
+	isolation:        isolate;
+	display:          grid;
+	grid-template:
+		"close close" auto
+		"hero hero"  auto
+		"chron chron" minmax(0, 1fr)
+		"footer footer" auto / 1fr 1fr;
+	gap:              0;
+	overflow:         hidden;
+	padding:          24px;
+	box-sizing:       border-box;
+
+	&__backdrop {
+		position:   fixed;
+		inset:      0;
+		background: rgba(0, 0, 0, 0.2);
+		z-index:    99;
+	}
+
+	/* ---------- close affordance (only perfect circle, per DESIGN.md Shapes) ---------- */
+
+	&__close {
+		grid-area:        close;
+		justify-self:     end;
+		width:            32px;
+		height:           32px;
+		border-radius:    9999px;
+		background:       rgba(60, 111, 59, 0.08);
+		color:            #3c6f3b;
+		border:           none;
+		cursor:           pointer;
+		display:          flex;
+		align-items:      center;
+		justify-content:  center;
+		transition:       background 0.2s ease, transform 0.2s ease;
+
+		svg { width: 16px; height: 16px; }
+
+		&:hover  { background: rgba(60, 111, 59, 0.18); transform: scale(1.06); }
+		&:focus-visible {
+			outline:        2px solid #3c6f3b;
+			outline-offset: 2px;
+		}
+	}
+
+	/* ---------- hero (left polus of the spread) ---------- */
+
+	&__hero {
+		grid-area:       hero;
+		display:         grid;
+		grid-template-columns: minmax(0, auto) 1fr;
+		gap:             20px;
+		align-items:     start;
+		padding:         4px 0 20px;
+	}
+
+	&__plant {
+		display:          flex;
+		align-items:      flex-end;
+		justify-content:  center;
+		width:            140px;
+		height:           140px;
+		background:
+			radial-gradient(
+				ellipse at bottom,
+				rgba(224, 219, 200, 0.68) 0%,       /* Pot Clay */
+				rgba(224, 219, 200, 0.28) 55%,
+				transparent 85%
+			);
+		border-radius:    14px;
+	}
+
+	&__plant-img {
+		max-width:   100%;
+		max-height:  100%;
+		object-fit:  contain;
+
+		&--placeholder {
+			width:          80px;
+			height:         80px;
+			background:     rgba(60, 111, 59, 0.08);
+			border-radius:  9999px;
+		}
+	}
+
+	&__identity {
+		display:         flex;
+		flex-direction:  column;
+		gap:             8px;
+		min-width:       0;
+	}
+
+	&__level {
+		display:         flex;
+		flex-wrap:       wrap;
+		align-items:     baseline;
+		gap:             6px;
+		font-size:       12px;
+		letter-spacing:  0.02em;
+		text-transform:  uppercase;
+		color:           #a0917f;
+	}
+
+	&__level-label { color: #a0917f; }
+
+	&__level-value {
+		color:                 #3c6f3b;
+		font-weight:           600;
+		font-variant-numeric:  tabular-nums;
+		text-transform:        none;
+		letter-spacing:        normal;
+		font-size:             13px;
+
+		&--low { color: #a2591e; }
+	}
+
+	&__level-sep { color: #c9bfae; }
+
+	&__name {
+		margin:          0;
+		font-size:       30px;
+		font-weight:     700;
+		letter-spacing:  -0.01em;
+		line-height:     1.08;
+		color:           #1f2a1c;
+		overflow:        hidden;
+		text-overflow:   ellipsis;
+	}
+
+	&__name-input {
+		width:           100%;
+		height:          44px;
+		font-size:       22px;
+		font-weight:     600;
+		letter-spacing:  -0.01em;
+		border:          1px solid #d1c5b8;
+		border-radius:   8px;
+		padding:         0 12px;
+		background:      #fff;
+		color:           #1f2a1c;
+		outline:         none;
+		transition:      border-color 0.15s ease;
+
+		&:focus { border-color: #a0917f; }
+	}
+
+	&__stats {
+		display:         grid;
+		grid-template-columns: repeat(3, minmax(0, auto));
+		gap:             22px;
+		margin:          6px 0 0;
+		padding:         0;
+	}
+
+	&__stat {
+		display:         flex;
+		flex-direction:  column;
+		gap:             2px;
+		margin:          0;
+	}
+
+	&__stat-label {
+		margin:                0;
+		font-size:             18px;
+		font-weight:           500;
+		color:                 #3c6f3b;
+		line-height:           1;
+		font-variant-numeric:  tabular-nums;
+
+		&--streak {
+			display:     flex;
+			align-items: center;
+			gap:         4px;
+
+			svg { width: 16px; height: 16px; color: #c7823a; }
+		}
+	}
+
+	&__stat-meta {
+		margin:          0;
+		font-size:       11px;
+		letter-spacing:  0.02em;
+		text-transform:  uppercase;
+		color:           #a0917f;
+	}
+
+	&__remaining {
+		font-size:       13px;
+		color:           #88877a;
+
+		&--bloom { color: #3c6f3b; font-weight: 500; }
+		&--dead  { color: #88877a; font-style: italic; }
+	}
+
+	&__today-pill {
+		display:         inline-flex;
+		align-items:     center;
+		gap:             8px;
+		align-self:      flex-start;
+		padding:         6px 12px;
+		border-radius:   9999px;
+		background:      rgba(255, 255, 255, 0.6);
+		font-size:       12px;
+		color:           #4b5563;
+		letter-spacing:  0.01em;
+
+		.goal-info__today-dot {
+			width:         8px;
+			height:        8px;
+			border-radius: 9999px;
+			background:    #c7823a;         /* awaiting — warm amber */
+		}
+
+		&--watered {
+			background: rgba(63, 150, 0, 0.18);
+			color:      #3c6f3b;
+
+			.goal-info__today-dot { background: #3c6f3b; }
+		}
+
+		&--frozen {
+			background: rgba(75, 138, 166, 0.18);
+			color:      #4b8aa6;
+
+			.goal-info__today-dot { background: #4b8aa6; }
+		}
+	}
+
+	&__description {
+		margin:          8px 0 0;
+		padding:         10px 12px;
+		font-size:       13px;
+		line-height:     1.4;
+		color:           #4b5563;
+		background:      rgba(255, 255, 255, 0.5);  /* Greenhouse Glass */
+		border-radius:   10px;
+	}
+
+	&__term {
+		display:         flex;
+		align-items:     center;
+		gap:             10px;
+		padding-top:     4px;
+	}
+
+	&__term-label {
+		font-size:       12px;
+		color:           #88877a;
+	}
+
+	&__term-input {
+		height:          40px;
+		border:          1px solid #d1c5b8;
+		border-radius:   8px;
+		padding:         0 12px;
+		font-size:       14px;
+		outline:         none;
+		background:      #fff;
+		color:           #1f2a1c;
+		transition:      border-color 0.15s ease;
+
+		&:focus { border-color: #a0917f; }
+	}
+
+	/* ---------- chronicle (right polus of the spread) ---------- */
+
+	&__chronicle {
+		grid-area:       chron;
+		overflow-y:      auto;
+		padding:         12px 2px 16px 4px;
+		/* Warm-air gutter between hero and chronicle on mobile (no 1px rule) */
+		background:
+			radial-gradient(
+				ellipse at top,
+				rgba(255, 245, 220, 0.55) 0%,
+				transparent 50%
+			);
+		border-radius:   12px;
+
+		scrollbar-color: rgba(60, 111, 59, 0.35) transparent;
+		scrollbar-width: thin;
+
+		&::-webkit-scrollbar       { width: 6px; }
+		&::-webkit-scrollbar-track { background: transparent; }
+		&::-webkit-scrollbar-thumb { background: rgba(60, 111, 59, 0.35); border-radius: 3px; }
+	}
+
+	&__chronicle-head {
+		padding:         0 8px 8px;
+		font-size:       14px;
+		font-weight:     500;
+		color:           #1f2a1c;
+	}
+
+	/* ---------- Week-strip (horizontal 7-day history) ---------- */
+
+	&__week {
+		list-style:    none;
+		margin:        0 0 14px;
+		padding:       6px;
+		display:       grid;
+		grid-template-columns: repeat(7, 1fr);
+		gap:           4px;
+		background:    rgba(255, 255, 255, 0.4);
+		border-radius: 10px;
+	}
+
+	&__week-cell {
+		display:         flex;
+		flex-direction:  column;
+		align-items:     center;
+		gap:             4px;
+		padding:         6px 2px;
+		border-radius:   8px;
+		font-size:       10px;
+		color:           #88877a;
+		transition:      background 0.18s ease;
+
+		&--completed {
+			background: rgba(63, 150, 0, 0.18);
+
+			.goal-info__week-glyph {
+				background: #3c6f3b;
+				color:      #fffbeb;
+			}
+		}
+
+		&--frozen {
+			background: rgba(75, 138, 166, 0.16);
+			color:      #4b8aa6;
+
+			.goal-info__week-glyph { color: #4b8aa6; }
+		}
+
+		&--missed {
+			background: rgba(168, 100, 100, 0.08);
+			color:      #a89d8e;
+
+			.goal-info__week-glyph { color: #a89d8e; }
+		}
+
+		&--today {
+			background: rgba(255, 245, 220, 0.72);
+			color:      #c7823a;
+
+			.goal-info__week-glyph { color: #c7823a; }
+		}
+
+		&--future {
+			color: #c6bbaa;
+
+			.goal-info__week-glyph { color: #c6bbaa; }
+		}
+	}
+
+	&__week-weekday {
+		font-size:       10px;
+		text-transform:  uppercase;
+		letter-spacing:  0.03em;
+		line-height:     1;
+	}
+
+	&__week-glyph {
+		display:         flex;
+		align-items:     center;
+		justify-content: center;
+		width:           22px;
+		height:          22px;
+		border-radius:   9999px;
+		background:      rgba(255, 255, 255, 0.55);
+		color:           #88877a;
+
+		svg { width: 14px; height: 14px; }
+	}
+
+	&__week-dot {
+		width:         5px;
+		height:        5px;
+		border-radius: 9999px;
+		background:    currentColor;
+		opacity:       0.6;
+	}
+
+	&__week-num {
+		font-size:            12px;
+		font-weight:          500;
+		color:                #1f2a1c;
+		font-variant-numeric: tabular-nums;
+	}
+
+	&__week-cell--missed .goal-info__week-num,
+	&__week-cell--future .goal-info__week-num { color: inherit; }
+
+	&__chronicle-empty {
+		padding:         40px 16px;
+		text-align:      center;
+		font-size:       13px;
+		color:           #88877a;
+	}
+
+	&__chronicle-group + &__chronicle-group { margin-top: 18px; }
+
+	&__chronicle-label {
+		padding:         0 8px 10px;
+		font-size:       11px;
+		letter-spacing:  0.04em;
+		text-transform:  uppercase;
+		color:           #a0917f;
+	}
+
+	&__chronicle-list {
+		list-style:     none;
+		margin:         0;
+		padding:        0 4px;
+		display:        flex;
+		flex-direction: column;
+		gap:            3px;
+	}
+
+	&__day {
+		display:         grid;
+		grid-template-columns: 32px 44px 1fr 24px;
+		align-items:     center;
+		height:          34px;
+		padding:         0 10px;
+		border-radius:   8px;
+		font-size:       13px;
+		color:           #4b5563;
+		font-variant-numeric: tabular-nums;
+		transition:      background 0.18s ease, color 0.18s ease;
+
+		&-weekday {
+			font-size:       11px;
+			color:           #a0917f;
+			letter-spacing:  0.02em;
+			text-transform:  uppercase;
+		}
+
+		&-number { font-size: 15px; font-weight: 500; }
+		&-ordinal { font-size: 12px; color: #88877a; }
+
+		&-mark {
+			display:         flex;
+			align-items:     center;
+			justify-content: center;
+			width:           18px;
+			height:          18px;
+			border-radius:   9999px;
+			color:           #3c6f3b;
+
+			svg { width: 100%; height: 100%; }
+		}
+
+		&--completed {
+			background: rgba(63, 150, 0, 0.14);
+
+			.goal-info__day-mark { background: #3c6f3b; }
+		}
+
+		&--frozen {
+			background: rgba(63, 150, 0, 0.07);
+			color:      #88877a;
+
+			.goal-info__day-mark { color: #a0917f; }
+		}
+
+		&--missed {
+			color:   #a89d8e;
+			opacity: 0.75;
+
+			.goal-info__day-ordinal { color: #a89d8e; }
+		}
+
+		&--today {
+			background:
+				linear-gradient(
+					90deg,
+					rgba(255, 245, 220, 0.9) 0%,
+					rgba(255, 220, 210, 0.4) 100%
+				);
+			color: #1f2a1c;
+
+			.goal-info__day-mark {
+				background: #fff;
+				border:     1.5px solid #3c6f3b;
+			}
+		}
+
+		&--future {
+			color: #c6bbaa;
+
+			.goal-info__day-ordinal { color: #c6bbaa; }
+		}
+	}
+
+	/* ---------- action footer: primary full-width + overflow menu ---------- */
+
+	&__footer {
+		grid-area:       footer;
+		display:         grid;
+		grid-template-columns: minmax(0, 1fr) 56px 56px 56px;
+		gap:             10px;
+		padding-top:     20px;
+	}
+
+	&__primary {
+		display:         flex;
+		align-items:     center;
+		justify-content: center;
+		gap:             10px;
+		min-height:      56px;
+		padding:         12px 24px;
+		border-radius:   12px;
+		background:      rgba(76, 158, 16, 0.27);  /* Meadow */
+		border:          none;
+		color:           #1f2a1c;
+		font-size:       15px;
+		font-weight:     500;
+		cursor:          pointer;
+		transition:      background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+
+		svg { width: 20px; height: 20px; color: #3c6f3b; flex-shrink: 0; }
+
+		&:hover:not(:disabled) {
+			background: rgba(77, 165, 13, 0.45);
+			box-shadow: 0 2px 8px rgba(76, 158, 16, 0.25);
+			transform:  translateY(-1px);
+		}
+
+		&:focus-visible {
+			outline:        2px solid #3c6f3b;
+			outline-offset: 2px;
+		}
+
+		&:disabled {
+			cursor:  not-allowed;
+			opacity: 0.75;
+		}
+
+		/* Confirmed state — persistent change state (boarding-pass donation) */
+		&--marked {
+			background:  rgba(63, 150, 0, 0.18);
+			color:       #3c6f3b;
+			cursor:      default;
+
+			svg { color: #3c6f3b; }
+		}
+
+		&--frozen {
+			background:  rgba(75, 138, 166, 0.22);
+			color:       #4b8aa6;
+			cursor:      default;
+
+			svg { color: #4b8aa6; }
+		}
+
+		&--cancel {
+			background: rgba(255, 255, 255, 0.5);
+			color:      #1f2a1c;
+
+			&:hover { background: rgba(255, 255, 255, 0.72); }
+		}
+
+		&--save {
+			/* inherits Meadow styling from base */
+		}
+	}
+
+	/* ---------- Secondary actions (icon-only squares next to primary) ---------- */
+
+	&__sec {
+		width:           56px;
+		height:          56px;
+		border-radius:   12px;
+		background:      rgba(255, 255, 255, 0.5);     /* Greenhouse Glass */
+		border:          none;
+		color:           #3c6f3b;
+		cursor:          pointer;
+		display:         flex;
+		align-items:     center;
+		justify-content: center;
+		transition:      background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+
+		svg { width: 22px; height: 22px; }
+
+		&:hover:not(:disabled) {
+			background: rgba(255, 255, 255, 0.72);
+			transform:  translateY(-1px);
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+		}
+
+		&:focus-visible {
+			outline:        2px solid #3c6f3b;
+			outline-offset: 2px;
+		}
+
+		&:disabled {
+			cursor:  not-allowed;
+			opacity: 0.55;
+		}
+
+		&--freeze svg { color: #4b8aa6; }
+
+		&--danger svg       { color: #88877a; }
+		&--danger:hover svg { color: #7a2b2b; }
+
+		&--armed {
+			background: rgba(168, 68, 68, 0.18);
+
+			svg { color: #7a2b2b; }
+
+			&:hover { background: rgba(168, 68, 68, 0.28); }
+		}
+	}
+
+	/* ---------- Desktop spread: 50/50 columns with 48px warm-air gutter ---------- */
+
+	@media (min-width: 768px) {
+		left:            50%;
+		top:             50%;
+		bottom:          auto;
+		transform:       translate(-50%, -50%);
+		height:          auto;
+		min-height:      460px;
+		max-height:      min(650px, 85vh);
+		width:           760px;
+		border-radius:   16px;
+		padding:         32px;
+		grid-template:
+			"close close close"  auto
+			"hero  gutter chron" minmax(0, 1fr)
+			"footer footer footer" auto / 1fr 48px 1fr;
+
+		&__hero {
+			grid-area:             hero;
+			padding:               8px 0;
+			align-content:         start;
+			grid-template-columns: 1fr;
+			gap:                   14px;
+			justify-items:         start;
+		}
+
+		&__plant { width: 220px; height: 220px; }
+
+		&__chronicle {
+			grid-area:    chron;
+			align-self:   stretch;
+			background:
+				radial-gradient(
+					ellipse at left,
+					rgba(255, 245, 220, 0.42) 0%,
+					transparent 55%
+				);
+			padding:      8px 2px 8px 20px;
+		}
+
+		&__footer {
+			padding-top: 24px;
+			gap:         12px;
+		}
+	}
+
+	@media (max-width: 420px) {
+		&__hero {
+			grid-template-columns: 1fr;
+			gap:                   14px;
+		}
+		&__plant {
+			width:  100%;
+			height: 180px;
+		}
+		&__stats {
+			gap:            18px;
+		}
+	}
+
+	/* ---------- Night theme ---------- */
+
+	html[data-theme="night"] & {
+		background:  #1b2638;
+		color:       #e6e2d6;
+		box-shadow:  0 0 0 1px rgba(140, 180, 220, 0.1), 0 -4px 32px rgba(0, 0, 0, 0.5);
+
+		.goal-info__close {
+			background: rgba(140, 180, 220, 0.12);
+			color:      #a8e6a8;
+
+			&:hover { background: rgba(140, 180, 220, 0.22); }
+		}
+
+		.goal-info__plant {
+			background:
+				radial-gradient(
+					ellipse at 50% 70%,
+					rgba(140, 180, 220, 0.18) 0%,
+					rgba(140, 180, 220, 0.06) 40%,
+					transparent 72%
+				);
+		}
+
+		.goal-info__plant-img {
+			filter:
+				drop-shadow(0 0 16px rgba(140, 180, 220, 0.35))
+				drop-shadow(0 10px 20px rgba(0, 0, 0, 0.45));
+		}
+
+		.goal-info__name          { color: #e6e2d6; }
+		.goal-info__level-label   { color: #6c7786; }
+		.goal-info__level-value   { color: #a8e6a8; }
+		.goal-info__level-value--low { color: #e3a473; }
+		.goal-info__level-sep     { color: #4a5566; }
+
+		.goal-info__stat-label    { color: #a8e6a8; }
+		.goal-info__stat-meta     { color: #6c7786; }
+		.goal-info__stat-label--streak svg { color: #e3a473; }
+
+		.goal-info__remaining     { color: #8591a1; }
+		.goal-info__remaining--bloom { color: #a8e6a8; }
+
+		.goal-info__today-pill    {
+			background: rgba(140, 180, 220, 0.1);
+			color:      #a8b1bd;
+
+			.goal-info__today-dot { background: #e3a473; }
+
+			&--watered {
+				background: rgba(63, 150, 0, 0.22);
+				color:      #a8e6a8;
+
+				.goal-info__today-dot { background: #a8e6a8; }
+			}
+
+			&--frozen {
+				background: rgba(100, 160, 200, 0.22);
+				color:      #86b9d6;
+
+				.goal-info__today-dot { background: #86b9d6; }
+			}
+		}
+
+		.goal-info__description {
+			background: rgba(140, 180, 220, 0.08);
+			color:      #a8b1bd;
+		}
+
+		.goal-info__name-input,
+		.goal-info__term-input {
+			background:   #243244;
+			border-color: rgba(140, 180, 220, 0.22);
+			color:        #e6e2d6;
+
+			&:focus { border-color: #a8e6a8; }
+		}
+
+		.goal-info__term-label    { color: #8591a1; }
+
+		.goal-info__chronicle     {
+			background:
+				radial-gradient(
+					ellipse at top,
+					rgba(100, 140, 180, 0.14) 0%,
+					transparent 50%
+				);
+		}
+
+		.goal-info__chronicle-head  { color: #e6e2d6; }
+		.goal-info__chronicle-empty,
+		.goal-info__chronicle-label { color: #6c7786; }
+
+		.goal-info__week          { background: rgba(140, 180, 220, 0.06); }
+		.goal-info__week-glyph    { background: rgba(140, 180, 220, 0.12); }
+		.goal-info__week-num      { color: #e6e2d6; }
+		.goal-info__week-cell     { color: #8591a1; }
+		.goal-info__week-cell--completed { background: rgba(63, 150, 0, 0.28); }
+		.goal-info__week-cell--frozen    { background: rgba(100, 160, 200, 0.22); color: #86b9d6; }
+		.goal-info__week-cell--today     { background: rgba(227, 164, 115, 0.16); color: #e3a473; }
+
+		.goal-info__day           { color: #a8b1bd; }
+		.goal-info__day-ordinal   { color: #6c7786; }
+		.goal-info__day--completed   { background: rgba(63, 150, 0, 0.26); color: #e6e2d6; }
+		.goal-info__day--frozen      { background: rgba(100, 160, 200, 0.18); color: #86b9d6; }
+		.goal-info__day--today       {
+			background:
+				linear-gradient(
+					90deg,
+					rgba(140, 180, 220, 0.22) 0%,
+					rgba(200, 170, 230, 0.14) 100%
+				);
+			color: #e6e2d6;
+		}
+
+		.goal-info__primary {
+			background: rgba(140, 180, 220, 0.14);
+			color:      #e6e2d6;
+
+			svg { color: #a8e6a8; }
+
+			&:hover:not(:disabled) {
+				background: rgba(140, 180, 220, 0.28);
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+			}
+
+			&--marked {
+				background: rgba(63, 150, 0, 0.28);
+				color:      #a8e6a8;
+
+				svg { color: #a8e6a8; }
+			}
+
+			&--frozen {
+				background: rgba(100, 160, 200, 0.28);
+				color:      #86b9d6;
+
+				svg { color: #86b9d6; }
+			}
+
+			&--cancel {
+				background: rgba(140, 180, 220, 0.08);
+
+				&:hover { background: rgba(140, 180, 220, 0.14); }
+			}
+		}
+
+		.goal-info__sec {
+			background: rgba(140, 180, 220, 0.14);
+			color:      #a8e6a8;
+
+			svg { color: #a8e6a8; }
+
+			&:hover:not(:disabled) { background: rgba(140, 180, 220, 0.24); }
+
+			&--freeze svg       { color: #86b9d6; }
+			&--danger svg       { color: #8591a1; }
+			&--danger:hover svg { color: #e38a8a; }
+
+			&--armed {
+				background: rgba(227, 138, 138, 0.18);
+
+				svg { color: #e38a8a; }
+
+				&:hover { background: rgba(227, 138, 138, 0.26); }
+			}
+		}
+	}
+}
+
+html[data-theme="night"] .goal-info__backdrop {
+	background: rgba(0, 0, 0, 0.55);
+}

@@ -4,8 +4,23 @@
 	max-width:  100%;
 	margin:     0 auto;
 	height:     100lvh;
-	padding:    16px;
+	padding:
+		max(16px, env(safe-area-inset-top))
+		max(16px, env(safe-area-inset-right))
+		max(16px, env(safe-area-inset-bottom))
+		max(16px, env(safe-area-inset-left));
 	box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+	#root {
+		padding:
+			max(12px, env(safe-area-inset-top))
+			max(12px, env(safe-area-inset-right))
+			/* bottom gets extra room for the mobile tab bar (72px) + safe inset */
+			calc(76px + env(safe-area-inset-bottom))
+			max(12px, env(safe-area-inset-left));
+	}
 }
 
 body {
@@ -30,6 +45,45 @@ body {
 	            );
 
 	min-height: 100vh;
+	transition: background 0.4s ease, color 0.3s ease;
+}
+
+/* View-transition tuning for the modal-open/close morphs.
+   The named pseudo-groups (goal-create = + button → create modal,
+   goal-detail = clicked card → detail modal) are forced above everything else
+   so the morphing snapshot never gets stacked under live DOM cards or
+   dashboard pseudo-groups during the transition. */
+@media (prefers-reduced-motion: no-preference) {
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation-duration: 220ms;
+	}
+
+	::view-transition-group(goal-create),
+	::view-transition-group(goal-detail) {
+		z-index: 100;
+	}
+}
+
+html[data-theme="night"] body {
+	background: radial-gradient(
+		            circle at top left,
+		            rgba(140, 180, 220, 0.22) 0%,
+		            rgba(100, 140, 180, 0.12) 25%,
+		            transparent 50%
+	            ),
+	            radial-gradient(
+		            circle at top right,
+		            rgba(200, 170, 230, 0.18) 0%,
+		            transparent 40%
+	            ),
+	            linear-gradient(
+		            180deg,
+		            #1b2638 0%,
+		            #141d2d 40%,
+		            #0f1623 100%
+	            );
+	color: #e6e2d6;
 }
 
 p {

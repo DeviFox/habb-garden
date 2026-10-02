@@ -2,17 +2,116 @@
 	display:         flex;
 	align-items:     center;
 	justify-content: center;
+	padding-top:     clamp(16px, 4vh, 48px);
+	padding-bottom:  clamp(16px, 4vh, 48px);
+	box-sizing:      border-box;
+
+	&__card {
+		position:        relative;
+		width:           min(760px, 100%);
+		max-height:      100%;
+		display:         grid;
+		grid-template-rows: 1fr auto;
+		gap:             8px;
+		padding:         clamp(28px, 4vh, 48px) clamp(32px, 5vw, 56px) clamp(28px, 4vh, 44px);
+		background:      rgba(255, 255, 255, 0.5);        /* Greenhouse Glass */
+		border-radius:   16px;
+		overflow:        hidden;
+		box-sizing:      border-box;
+	}
+
+	/* Warm morning halo behind the illustration — anchored high so the plant
+	   feels sunlit rather than framed. No dashed border, no outline. */
+	&__halo {
+		position:       absolute;
+		inset:          0;
+		pointer-events: none;
+		background:
+			radial-gradient(
+				ellipse at 50% 32%,
+				rgba(255, 245, 220, 0.72) 0%,     /* Morning Warm */
+				rgba(255, 220, 210, 0.28) 40%,    /* Morning Blush */
+				transparent 72%
+			);
+	}
+
+	&__stage {
+		position:        relative;
+		z-index:         1;
+		display:         flex;
+		align-items:     center;
+		justify-content: center;
+		min-height:      0;
+	}
 
 	&__img {
-		border-radius:  16px;
-		outline:        2px dashed rgb(63 111 59 / 35%);
-		outline-offset: 4px;
-		box-shadow:     0 8px 24px rgb(0 0 0 / 10%);
-		transition:     outline-color 0.3s ease, box-shadow 0.3s ease;
+		max-width:       100%;
+		max-height:      min(60vh, 480px);
+		object-fit:      contain;
+		/* Shadow sits beneath the illustration like it's resting on a shelf,
+		   not framing a photograph. */
+		filter:
+			drop-shadow(0 10px 14px rgba(60, 111, 59, 0.14))
+			drop-shadow(0 24px 32px rgba(60, 111, 59, 0.08));
+	}
 
-		&:hover {
-			outline-color: rgb(63 111 59 / 60%);
-			box-shadow:    0 12px 32px rgb(0 0 0 / 15%);
+	&__body {
+		position:        relative;
+		z-index:         1;
+		display:         flex;
+		flex-direction:  column;
+		gap:             6px;
+		text-align:      center;
+		padding:         0 clamp(0px, 2vw, 24px);
+	}
+
+	&__kicker {
+		font-size:       11px;
+		letter-spacing:  0.14em;
+		text-transform:  uppercase;
+		color:           #3c6f3b;
+		opacity:         0.75;
+	}
+
+	&__title {
+		margin:          0;
+		font-size:       clamp(22px, 2.4vw, 28px);
+		font-weight:     600;
+		letter-spacing:  -0.01em;
+		color:           #1f2a1c;
+	}
+
+	&__blurb {
+		margin:          2px auto 0;
+		font-size:       14px;
+		line-height:     1.5;
+		color:           #4b5563;
+		max-width:       46ch;
+	}
+
+	/* ---------- Night theme ---------- */
+
+	html[data-theme="night"] & {
+		.construction-layout__card { background: rgba(30, 42, 58, 0.55); }
+
+		.construction-layout__halo {
+			background:
+				radial-gradient(
+					ellipse at 50% 32%,
+					rgba(140, 180, 220, 0.22) 0%,
+					rgba(200, 170, 230, 0.14) 40%,
+					transparent 72%
+				);
 		}
+
+		.construction-layout__img {
+			filter:
+				drop-shadow(0 10px 14px rgba(0, 0, 0, 0.35))
+				drop-shadow(0 24px 32px rgba(0, 0, 0, 0.25));
+		}
+
+		.construction-layout__kicker { color: #a8e6a8; }
+		.construction-layout__title  { color: #e6e2d6; }
+		.construction-layout__blurb  { color: #a8b1bd; }
 	}
 }
