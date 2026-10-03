@@ -1,0 +1,358 @@
+.guide {
+	position:   fixed;
+	inset:      0;
+	z-index:    240;
+	display:    flex;
+	align-items:     center;
+	justify-content: center;
+	padding:
+		max(16px, env(safe-area-inset-top))
+		max(16px, env(safe-area-inset-right))
+		max(16px, env(safe-area-inset-bottom))
+		max(16px, env(safe-area-inset-left));
+	box-sizing: border-box;
+	animation:  guide-fade 0.3s ease-out;
+
+	&__veil {
+		position:  absolute;
+		inset:     0;
+		background:
+			radial-gradient(
+				ellipse at 50% 30%,
+				rgba(255, 245, 220, 0.9) 0%,
+				rgba(255, 236, 210, 0.75) 35%,
+				rgba(60, 111, 59, 0.5) 100%
+			);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+	}
+
+	&__frame {
+		position:        relative;
+		z-index:         1;
+		width:           min(480px, calc(100vw - 32px));
+		max-height:      min(680px, calc(100vh - 48px));
+		padding:         clamp(28px, 4vw, 40px) clamp(24px, 4vw, 36px) clamp(20px, 3vw, 28px);
+		background:      #fdf5ed;
+		border-radius:   24px;
+		box-shadow:
+			0 0 0 1px rgba(255, 245, 220, 0.6),
+			0 24px 60px rgba(60, 111, 59, 0.25);
+		display:         grid;
+		gap:             18px;
+		grid-template-rows: 1fr auto auto;
+		animation:       guide-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+		overflow:        hidden;
+	}
+
+	&__close {
+		position:        absolute;
+		top:             14px;
+		right:           14px;
+		width:           32px;
+		height:          32px;
+		border-radius:   9999px;
+		background:      rgba(60, 111, 59, 0.08);
+		border:          none;
+		color:           #3c6f3b;
+		cursor:          pointer;
+		display:         flex;
+		align-items:     center;
+		justify-content: center;
+		z-index:         2;
+		transition:      background 0.2s ease, transform 0.2s ease;
+
+		svg { width: 16px; height: 16px; }
+
+		&:hover { background: rgba(60, 111, 59, 0.16); transform: scale(1.05); }
+		&:focus-visible {
+			outline:        2px solid #3c6f3b;
+			outline-offset: 2px;
+		}
+	}
+
+	/* ---------- Stage (sliding carousel) ---------- */
+
+	&__stage {
+		position:   relative;
+		overflow:   hidden;
+		min-height: 320px;
+	}
+
+	&__slide {
+		position:        absolute;
+		inset:           0;
+		display:         flex;
+		flex-direction:  column;
+		align-items:     center;
+		justify-content: center;
+		gap:             14px;
+		text-align:      center;
+		padding:         0 clamp(0px, 1vw, 12px);
+		opacity:         0;
+		pointer-events:  none;
+		transform:       translateX(16px);
+		transition:      opacity 0.3s ease, transform 0.3s ease;
+
+		&--active {
+			opacity:        1;
+			pointer-events: auto;
+			transform:      translateX(0);
+			animation:      guide-slide-in 0.4s ease-out;
+		}
+	}
+
+	@keyframes guide-slide-in {
+		from { opacity: 0; transform: translateX(28px); }
+		to   { opacity: 1; transform: translateX(0); }
+	}
+
+	/* ---------- Icon circles — color-coded by slide topic ---------- */
+
+	&__icon {
+		display:         flex;
+		align-items:     center;
+		justify-content: center;
+		width:           92px;
+		height:          92px;
+		border-radius:   9999px;
+		margin-bottom:   8px;
+
+		svg { width: 48px; height: 48px; }
+
+		&--seed {
+			background:
+				radial-gradient(ellipse at 50% 30%, #4b8f3f 0%, #3c6f3b 60%, #2f5a2e 100%);
+			color: #fffbeb;
+			box-shadow:
+				0 4px 14px rgba(60, 111, 59, 0.35),
+				0 0 24px rgba(255, 240, 190, 0.25);
+		}
+
+		&--drop {
+			background:
+				radial-gradient(ellipse at 50% 30%, #6ba9c2 0%, #4b8aa6 60%, #3a718a 100%);
+			color: #fffbeb;
+			box-shadow:
+				0 4px 14px rgba(75, 138, 166, 0.35),
+				0 0 24px rgba(190, 220, 240, 0.3);
+		}
+
+		&--alert {
+			background:
+				radial-gradient(ellipse at 50% 30%, #e3a473 0%, #c7823a 60%, #a2591e 100%);
+			color: #fffbeb;
+			box-shadow:
+				0 4px 14px rgba(199, 130, 58, 0.35),
+				0 0 24px rgba(255, 220, 150, 0.3);
+		}
+
+		&--heart {
+			background:
+				radial-gradient(ellipse at 50% 30%, #e8a5b8 0%, #d47a92 60%, #a85670 100%);
+			color: #fffbeb;
+			box-shadow:
+				0 4px 14px rgba(212, 122, 146, 0.35),
+				0 0 24px rgba(255, 220, 230, 0.3);
+		}
+	}
+
+	&__kicker {
+		font-size:       11px;
+		letter-spacing:  0.18em;
+		text-transform:  uppercase;
+		color:           #3c6f3b;
+		opacity:         0.85;
+	}
+
+	&__title {
+		margin:          0;
+		font-size:       clamp(22px, 3.5vw, 28px);
+		font-weight:     700;
+		letter-spacing:  -0.01em;
+		line-height:     1.15;
+		color:           #1f2a1c;
+	}
+
+	&__body {
+		margin:          0 auto;
+		max-width:       36ch;
+		font-size:       14px;
+		line-height:     1.55;
+		color:           #4b5563;
+	}
+
+	/* ---------- Dots pagination ---------- */
+
+	&__dots {
+		display:         flex;
+		justify-content: center;
+		gap:             8px;
+	}
+
+	&__dot {
+		width:           8px;
+		height:          8px;
+		border-radius:   9999px;
+		border:          none;
+		background:      rgba(60, 111, 59, 0.2);
+		cursor:          pointer;
+		padding:         0;
+		transition:      background 0.2s ease, width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+		&:focus-visible {
+			outline:        2px solid #3c6f3b;
+			outline-offset: 2px;
+		}
+
+		&--active {
+			background:   #3c6f3b;
+			width:        22px;
+		}
+	}
+
+	/* ---------- Actions ---------- */
+
+	&__actions {
+		display:         flex;
+		justify-content: space-between;
+		align-items:     center;
+		gap:             10px;
+	}
+
+	&__actions-left {
+		display:         flex;
+		align-items:     center;
+		gap:             4px;
+		min-width:       0;
+	}
+
+	&__skip,
+	&__back {
+		height:          46px;
+		padding:         0 18px;
+		border:          none;
+		border-radius:   12px;
+		background:      transparent;
+		color:           #4b5563;
+		font-size:       14px;
+		cursor:          pointer;
+		transition:      background 0.2s ease, color 0.2s ease;
+
+		&:hover { background: rgba(60, 111, 59, 0.08); color: #1f2a1c; }
+
+		&:focus-visible {
+			outline:        2px solid #3c6f3b;
+			outline-offset: 2px;
+		}
+	}
+
+	&__next {
+		min-width:       140px;
+		padding:         0 24px;
+		height:          46px;
+		border:          none;
+		border-radius:   12px;
+		background:      #3c6f3b;
+		color:           #fffbeb;
+		font-size:       15px;
+		font-weight:     500;
+		cursor:          pointer;
+		transition:      background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+
+		&:hover {
+			background: #2f5a2e;
+			transform:  translateY(-1px);
+			box-shadow: 0 6px 16px rgba(60, 111, 59, 0.32);
+		}
+
+		&:focus-visible {
+			outline:        2px solid #fffbeb;
+			outline-offset: 3px;
+		}
+	}
+
+	@keyframes guide-fade {
+		from { opacity: 0; }
+		to   { opacity: 1; }
+	}
+
+	@keyframes guide-pop {
+		from { opacity: 0; transform: scale(0.94) translateY(10px); }
+		to   { opacity: 1; transform: scale(1)    translateY(0); }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		animation: none;
+		&__frame  { animation: none; }
+		&__slide  { animation: none; transition: opacity 0.15s; }
+	}
+
+	/* ---------- Mobile ---------- */
+
+	@media (max-width: 640px) {
+		padding: 12px;
+
+		&__frame {
+			width:          100%;
+			max-width:      none;
+			height:         100%;
+			max-height:     none;
+			border-radius:  20px;
+			padding:        24px 20px;
+		}
+
+		&__stage  { min-height: 260px; }
+		&__icon   { width: 76px; height: 76px; svg { width: 38px; height: 38px; } }
+		&__title  { font-size: 20px; }
+		&__body   { font-size: 13px; }
+	}
+
+	/* ---------- Night theme ---------- */
+
+	html[data-theme="night"] & {
+		.guide__veil {
+			background:
+				radial-gradient(
+					ellipse at 50% 30%,
+					rgba(140, 180, 220, 0.3) 0%,
+					rgba(100, 140, 180, 0.4) 40%,
+					rgba(15, 23, 33, 0.92) 100%
+				);
+		}
+
+		.guide__frame {
+			background: #1b2638;
+			box-shadow:
+				0 0 0 1px rgba(140, 180, 220, 0.12),
+				0 24px 60px rgba(0, 0, 0, 0.6);
+		}
+
+		.guide__close {
+			background: rgba(140, 180, 220, 0.12);
+			color:      #a8e6a8;
+
+			&:hover { background: rgba(140, 180, 220, 0.22); }
+		}
+
+		.guide__kicker { color: #a8e6a8; }
+		.guide__title  { color: #e6e2d6; }
+		.guide__body   { color: #a8b1bd; }
+
+		.guide__dot {
+			background: rgba(140, 180, 220, 0.22);
+			&--active  { background: #a8e6a8; }
+		}
+
+		.guide__skip,
+		.guide__back {
+			color: #a8b1bd;
+			&:hover { background: rgba(140, 180, 220, 0.1); color: #e6e2d6; }
+		}
+
+		.guide__next {
+			background: #3c6f3b;
+			&:hover    { background: #4b8f3f; }
+		}
+	}
+}

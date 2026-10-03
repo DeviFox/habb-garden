@@ -1,0 +1,249 @@
+.welcome {
+	position:  fixed;
+	inset:     0;
+	z-index:   250;
+	display:   flex;
+	align-items:     center;
+	justify-content: center;
+	padding:
+		max(24px, env(safe-area-inset-top))
+		max(24px, env(safe-area-inset-right))
+		max(24px, env(safe-area-inset-bottom))
+		max(24px, env(safe-area-inset-left));
+	box-sizing: border-box;
+	animation:  welcome-fade 0.5s ease-out;
+	overflow:   hidden;
+
+	&__scene {
+		position:   absolute;
+		inset:      0;
+		width:      100%;
+		height:     100%;
+		object-fit: cover;
+		z-index:    0;
+	}
+
+	&__veil {
+		position:   absolute;
+		inset:      0;
+		z-index:    1;
+		background:
+			radial-gradient(
+				ellipse at 50% 35%,
+				rgba(255, 245, 220, 0.75) 0%,
+				rgba(255, 236, 210, 0.5) 35%,
+				rgba(60, 111, 59, 0.35) 100%
+			);
+		backdrop-filter:         blur(6px);
+		-webkit-backdrop-filter: blur(6px);
+	}
+
+	&__card {
+		position:        relative;
+		z-index:         2;
+		max-width:       min(440px, calc(100vw - 48px));
+		padding:         clamp(28px, 4vw, 40px) clamp(24px, 4vw, 36px);
+		background:      #fdf5ed;
+		border-radius:   20px;
+		box-shadow:
+			0 0 0 1px rgba(255, 245, 220, 0.6),
+			0 24px 60px rgba(60, 111, 59, 0.25);
+		display:         grid;
+		gap:             12px;
+		text-align:      center;
+		animation:       welcome-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s backwards;
+	}
+
+	&__mark {
+		justify-self:    center;
+		width:           56px;
+		height:          56px;
+		display:         flex;
+		align-items:     center;
+		justify-content: center;
+		border-radius:   9999px;
+		background:
+			radial-gradient(
+				ellipse at 50% 30%,
+				#4b8f3f 0%,
+				#3c6f3b 60%,
+				#2f5a2e 100%
+			);
+		color:           #fffbeb;
+		box-shadow:
+			0 4px 14px rgba(60, 111, 59, 0.35),
+			0 0 24px rgba(255, 240, 190, 0.25);
+
+		svg { width: 32px; height: 32px; }
+	}
+
+	&__kicker {
+		font-size:       11px;
+		letter-spacing:  0.18em;
+		text-transform:  uppercase;
+		color:           #3c6f3b;
+		opacity:         0.8;
+	}
+
+	&__title {
+		margin:          0;
+		font-size:       clamp(44px, 7vw, 58px);
+		font-weight:     300;
+		letter-spacing:  -0.03em;
+		line-height:     1;
+		/* Darker end of the moss family — stays in brand-green conversation
+		   with the kicker, the sprout mark, and the "В сад" button instead
+		   of sitting as a hard near-black blot on the cream card. */
+		color:           #2f5a2e;
+	}
+
+	&__blurb {
+		margin:          4px auto 0;
+		max-width:       32ch;
+		font-size:       14px;
+		line-height:     1.55;
+		color:           #4b5563;
+	}
+
+	&__form {
+		display:         grid;
+		gap:             10px;
+		margin-top:      8px;
+	}
+
+	&__field {
+		display:         grid;
+		gap:             6px;
+		text-align:      left;
+	}
+
+	&__field-label {
+		font-size:       12px;
+		color:           #88877a;
+		letter-spacing:  0.02em;
+	}
+
+	&__input {
+		width:           100%;
+		height:          48px;
+		padding:         0 16px;
+		font-size:       16px;
+		font-family:     inherit;
+		color:           #1f2a1c;
+		background:      #fff;
+		border:          1px solid #d1c5b8;
+		border-radius:   12px;
+		outline:         none;
+		transition:      border-color 0.15s ease, box-shadow 0.15s ease;
+		box-sizing:      border-box;
+
+		&::placeholder   { color: #c6bbaa; }
+
+		&:focus {
+			border-color: #3c6f3b;
+			box-shadow:   0 0 0 3px rgba(60, 111, 59, 0.15);
+		}
+	}
+
+	&__error {
+		font-size: 12px;
+		color:     #a2591e;
+		padding:   0 2px;
+	}
+
+	&__submit {
+		width:           100%;
+		height:          50px;
+		margin-top:      6px;
+		border:          none;
+		border-radius:   12px;
+		background:      #3c6f3b;
+		color:           #fffbeb;
+		font-size:       15px;
+		font-weight:     500;
+		cursor:          pointer;
+		transition:      background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+
+		&:hover:not(:disabled) {
+			background: #2f5a2e;
+			transform:  translateY(-1px);
+			box-shadow: 0 8px 20px rgba(60, 111, 59, 0.3);
+		}
+
+		&:focus-visible {
+			outline:        2px solid #fffbeb;
+			outline-offset: 3px;
+		}
+
+		&:disabled {
+			opacity: 0.55;
+			cursor:  not-allowed;
+		}
+	}
+
+	&__hint {
+		margin-top:      10px;
+		font-size:       11px;
+		color:           #88877a;
+		line-height:     1.5;
+	}
+
+	@keyframes welcome-fade {
+		from { opacity: 0; }
+		to   { opacity: 1; }
+	}
+
+	@keyframes welcome-pop {
+		from { opacity: 0; transform: scale(0.9) translateY(16px); }
+		to   { opacity: 1; transform: scale(1)   translateY(0); }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		animation: none;
+		&__card { animation: none; }
+	}
+
+	/* ---------- Night theme ---------- */
+
+	html[data-theme="night"] & {
+		.welcome__veil {
+			background:
+				radial-gradient(
+					ellipse at 50% 35%,
+					rgba(140, 180, 220, 0.3) 0%,
+					rgba(100, 140, 180, 0.4) 40%,
+					rgba(15, 23, 33, 0.9) 100%
+				);
+		}
+
+		.welcome__card {
+			background: #1b2638;
+			color:      #e6e2d6;
+			box-shadow:
+				0 0 0 1px rgba(140, 180, 220, 0.1),
+				0 24px 60px rgba(0, 0, 0, 0.6);
+		}
+
+		.welcome__kicker { color: #a8e6a8; }
+		/* Night: same monochrome idea — title sits in the sprout-green family
+		   with the kicker, slightly brighter so the light weight still reads. */
+		.welcome__title  { color: #a8e6a8; }
+		.welcome__blurb  { color: #a8b1bd; }
+
+		.welcome__field-label { color: #6c7786; }
+		.welcome__input {
+			background:   #243244;
+			border-color: rgba(140, 180, 220, 0.22);
+			color:        #e6e2d6;
+
+			&::placeholder { color: #4a5566; }
+			&:focus {
+				border-color: #a8e6a8;
+				box-shadow:   0 0 0 3px rgba(168, 230, 168, 0.14);
+			}
+		}
+
+		.welcome__error  { color: #e3a473; }
+		.welcome__hint   { color: #6c7786; }
+	}
+}

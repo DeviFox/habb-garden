@@ -70,15 +70,16 @@ type InfoWidgetProps = {
 
 function InfoWidget({onAddClick, isCreateOpen, onInfoOpen, openInfoId, openingTargetId}: InfoWidgetProps) {
 
-	const items: Goal[]  = useGoalStore(s => s.goals);
-	const crystals       = useGoalStore(s => s.crystals);
-	const freezesLeft    = useGoalStore(s => s.freezesLeft);
-	const viewMode       = useGoalStore(s => s.viewMode);
+	const items: Goal[]    = useGoalStore(s => s.goals);
+	const crystals         = useGoalStore(s => s.crystals);
+	const freezesLeft      = useGoalStore(s => s.freezesLeft);
+	const viewMode         = useGoalStore(s => s.viewMode);
 	const onViewModeChange = useGoalStore(s => s.setViewMode);
-	const streakGlobal   = calcMaxStreak(items);
+	const userName         = useGoalStore(s => s.userName);
+	const streakGlobal     = calcMaxStreak(items);
 
 	const greeting      = getTimeOfDayGreeting();
-	const gardener      = 'Формошлёп';
+	const gardener      = userName ?? 'Садовник';
 
 	/* Track horizontal scroll of the cards row so the mask fade appears on each
 	   edge only when there's actually content hidden behind it — the leftmost
@@ -111,8 +112,8 @@ function InfoWidget({onAddClick, isCreateOpen, onInfoOpen, openInfoId, openingTa
 			<div className="info-widget__topbar">
 				<div className="info-widget__salutation">
 					<div className="info-widget__salutation-greeting">{greeting},</div>
-					<div className="info-widget__salutation-name">{gardener}.</div>
-					<div className="info-widget__salutation-tag">Сегодня отличный день, чтобы вырастить что-то прекрасное.</div>
+					<div className="info-widget__salutation-name">{gardener}!</div>
+					<div className="info-widget__salutation-tag">Отличный день, чтобы вырастить что-то прекрасное</div>
 				</div>
 
 				<div className="info-widget__chips" aria-label="Статистика сада">

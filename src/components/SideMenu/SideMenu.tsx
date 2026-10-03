@@ -63,12 +63,13 @@ const NAV: NavEntry[] = [
 ];
 
 function SideMenu() {
-	const level  = useGoalStore(s => s.userLevel);
-	const xp     = useGoalStore(s => s.userXp);
-	const xpMax  = useGoalStore(s => s.userXpMax);
-	const xpPct  = xpMax > 0 ? Math.min(100, Math.round(xp / xpMax * 100)) : 0;
+	const level    = useGoalStore(s => s.userLevel);
+	const xp       = useGoalStore(s => s.userXp);
+	const xpMax    = useGoalStore(s => s.userXpMax);
+	const userName = useGoalStore(s => s.userName);
+	const xpPct    = xpMax > 0 ? Math.min(100, Math.round(xp / xpMax * 100)) : 0;
 
-	const gardener = 'Формошлёп';
+	const gardener = userName ?? 'Садовник';
 
 	return (
 		<aside className="side-menu rounded-xl bg-white/50 w-50">

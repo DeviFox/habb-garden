@@ -81,6 +81,58 @@
 		line-height:     1.25;
 	}
 
+	&__progress-details {
+		display:         flex;
+		flex-direction:  column;
+		gap:             10px;
+
+		/* Hide the default disclosure triangle; our chevron does the job. */
+		> summary          { list-style: none; }
+		> summary::-webkit-details-marker { display: none; }
+	}
+
+	&__progress-summary {
+		display:         flex;
+		align-items:     center;
+		justify-content: space-between;
+		padding:         6px 2px;
+		cursor:          pointer;
+		font-size:       12px;
+		color:           #88877a;
+		letter-spacing:  0.01em;
+		user-select:     none;
+		border-radius:   8px;
+		transition:      color 0.2s ease, background 0.2s ease;
+
+		&:hover { color: #3c6f3b; }
+
+		&:focus-visible {
+			outline:        2px solid #3c6f3b;
+			outline-offset: 2px;
+		}
+	}
+
+	&__progress-chevron {
+		width:      16px;
+		height:     16px;
+		flex-shrink: 0;
+		transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	&__progress-details[open] &__progress-chevron {
+		transform: rotate(180deg);
+	}
+
+	/* Fade+slide the progress panel in when the spoiler opens. */
+	&__progress-details[open] &__progress {
+		animation: dashboard-progress-reveal 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	@keyframes dashboard-progress-reveal {
+		from { opacity: 0; transform: translateY(-4px); }
+		to   { opacity: 1; transform: translateY(0); }
+	}
+
 	&__progress        { display: flex; flex-direction: column; gap: 8px; }
 
 	&__progress-head {
@@ -818,8 +870,10 @@
 		.dashboard__mini-stat-value { color: #a8e6a8; }
 		.dashboard__mini-stat-label { color: #6c7786; }
 
-		.dashboard__progress-head  { color: #a8b1bd; }
-		.dashboard__progress-bar   { background: rgba(140, 180, 220, 0.14); }
+		.dashboard__progress-head    { color: #a8b1bd; }
+		.dashboard__progress-bar     { background: rgba(140, 180, 220, 0.14); }
+		.dashboard__progress-summary { color: #6c7786; }
+		.dashboard__progress-summary:hover { color: #a8e6a8; }
 
 		.dashboard__today-sub,
 		.dashboard__today-empty,

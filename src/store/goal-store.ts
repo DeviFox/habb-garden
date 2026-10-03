@@ -11,26 +11,30 @@ const XP_PER_COMPLETED_GOAL  = 100;
 export type ViewMode = 'day' | 'night';
 
 type GoalState = {
-	goals:          Goal[];
-	crystals:       number;
-	freezesLeft:    number;
-	userLevel:      number;
-	userXp:         number;
-	userXpMax:      number;
-	viewMode:       ViewMode;
-	celebrationFor: string | null;     // id of a goal that just completed, triggers full-screen moment
-	lastReward:     number;            // crystal reward granted on the pending celebration
+	goals:                Goal[];
+	crystals:             number;
+	freezesLeft:          number;
+	userLevel:            number;
+	userXp:               number;
+	userXpMax:            number;
+	userName:             string | null;
+	onboardingCompleted:  boolean;
+	viewMode:             ViewMode;
+	celebrationFor:       string | null;     // id of a goal that just completed, triggers full-screen moment
+	lastReward:           number;            // crystal reward granted on the pending celebration
 
-	addGoal:           (goal: Goal) => void;
-	completeDay:       (id: string, date: string) => void;
-	freezeDay:         (id: string, date: string) => void;
-	updateGoal:        (id: string, patch: GoalPatch) => void;
-	killGoal:          (id: string) => void;
-	reviveGoal:        (id: string) => boolean;
-	addFreezes:        (count: number) => void;
-	grantCrystals:     (amount: number) => void;
-	setViewMode:       (mode: ViewMode) => void;
-	clearCelebration:  () => void;
+	addGoal:                (goal: Goal) => void;
+	completeDay:            (id: string, date: string) => void;
+	freezeDay:              (id: string, date: string) => void;
+	updateGoal:             (id: string, patch: GoalPatch) => void;
+	killGoal:               (id: string) => void;
+	reviveGoal:             (id: string) => boolean;
+	addFreezes:             (count: number) => void;
+	grantCrystals:          (amount: number) => void;
+	setViewMode:            (mode: ViewMode) => void;
+	clearCelebration:       () => void;
+	setUserName:            (name: string) => void;
+	completeOnboarding:     () => void;
 }
 
 export function completionReward(goalTerm: number): number {
@@ -55,15 +59,17 @@ function grantXp(state: GoalState, amount: number): Partial<GoalState> {
 }
 
 export const useGoalStore = create<GoalState>()(persist((set) => ({
-		goals:          [],
-		crystals:       120,                 // starter balance per mocks
-		freezesLeft:    2,                   // global allowance per PRODUCT.md
-		userLevel:      1,
-		userXp:         0,
-		userXpMax:      100,
-		viewMode:       'day',
-		celebrationFor: null,
-		lastReward:     0,
+		goals:               [],
+		crystals:            120,                 // starter balance per mocks
+		freezesLeft:         2,                   // global allowance per PRODUCT.md
+		userLevel:           1,
+		userXp:              0,
+		userXpMax:           100,
+		userName:            null,
+		onboardingCompleted: false,
+		viewMode:            'day',
+		celebrationFor:      null,
+		lastReward:          0,
 
 		addGoal: (goal: Goal) => set((state) => ({
 			goals: [...state.goals, goal]
@@ -132,10 +138,12 @@ export const useGoalStore = create<GoalState>()(persist((set) => ({
 			return didRevive;
 		},
 
-		addFreezes:       (count: number)   => set((state) => ({freezesLeft: state.freezesLeft + count})),
-		grantCrystals:    (amount: number)  => set((state) => ({crystals:    state.crystals + amount})),
-		setViewMode:      (mode: ViewMode)  => set(() => ({viewMode: mode})),
-		clearCelebration: ()                => set(() => ({celebrationFor: null, lastReward: 0})),
+		addFreezes:         (count: number)   => set((state) => ({freezesLeft: state.freezesLeft + count})),
+		grantCrystals:      (amount: number)  => set((state) => ({crystals:    state.crystals + amount})),
+		setViewMode:        (mode: ViewMode)  => set(() => ({viewMode: mode})),
+		clearCelebration:   ()                => set(() => ({celebrationFor: null, lastReward: 0})),
+		setUserName:        (name: string)    => set(() => ({userName: name.trim() || null})),
+		completeOnboarding: ()                => set(() => ({onboardingCompleted: true})),
 	}),
 	{
 		name: 'goal-store',

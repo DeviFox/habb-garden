@@ -23,6 +23,19 @@
 	}
 
 	html[data-theme="night"] & {
+		/* Replace the warm cream halo under the salutation with a cool
+		   moonlight wash that blends into the navy scene instead of showing
+		   a bright pastel oval. Softer transition stops kill the hard edge. */
+		&::before {
+			background:
+				radial-gradient(
+					ellipse at 18% 22%,
+					rgba(140, 180, 220, 0.26) 0%,
+					rgba(100, 140, 180, 0.1)  40%,
+					transparent 82%
+				);
+		}
+
 		.info-widget__chips {
 			background: rgba(30, 42, 58, 0.55);
 			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
@@ -90,8 +103,7 @@
 
 	&__salutation-name {
 		font-size:      30px;
-		font-weight:    500;
-		font-style:     italic;
+		font-weight:    700;
 		letter-spacing: -0.01em;
 		line-height:    1.08;
 		margin-top:     2px;
@@ -308,6 +320,10 @@
 		scroll-behavior: smooth;
 		padding-top:     14px;
 		padding-bottom:  10px;
+		/* Fill the full width of the hero so the scroll row goes edge-to-edge
+		   and the right-side fade sits where content can actually overflow. */
+		flex:            1 1 0;
+		min-width:       0;
 
 		/* 2D fade: horizontal fade only kicks in when content is actually
 		   overflowing in that direction (data-overflow-left/right set by JS on
@@ -396,7 +412,7 @@
 		border-radius:   16px;
 
 		&__salutation-greeting,
-		&__salutation-name { font-size: 20px; line-height: 1.1; }
+		&__salutation-name     { font-size: 20px; line-height: 1.1; }
 
 		&__salutation-tag {
 			font-size:   12px;
